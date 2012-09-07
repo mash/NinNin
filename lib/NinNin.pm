@@ -74,6 +74,8 @@ NinNin is a casual background processing framework
 
 mash E<lt>o.masakazu@gmail.comE<gt>
 
+Daisuke Murase <typester@cpan.org>
+
 =head1 SEE ALSO
 
 =head1 LICENSE
