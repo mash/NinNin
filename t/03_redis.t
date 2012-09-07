@@ -10,29 +10,21 @@ use Time::HiRes qw/sleep/;
 use NinNin;
 use NinNin::Backend::Redis;
 
-my $port = empty_port;
-
 my $redis_server;
 eval {
-    $redis_server = Test::RedisServer->new( conf => {
-        port => $port,
-    });
+    $redis_server = Test::RedisServer->new
 };
 if ($@) {
     plan skip_all => 'redis-server is required to run this test';
 }
 
 my $worker = proc_guard sub {
-    my $worker = NinNin::Backend::Redis->new(
-        server => "127.0.0.1:$port",
-    );
+    my $worker = NinNin::Backend::Redis->new( $redis_server->connect_info );
     $worker->work while 1;
 };
 
 NinNin->setup({
-    backend => NinNin::Backend::Redis->new(
-        server => "127.0.0.1:$port",
-    )
+    backend => NinNin::Backend::Redis->new( $redis_server->connect_info )
 });
 
 ninnin(
