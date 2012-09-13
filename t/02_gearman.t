@@ -43,14 +43,14 @@ NinNin->setup({
     })
 });
 
-ninnin(
+my $background_job = ninnin(
     sub {
         my (@args) = @_;
 
         Test::More::is_deeply( \@args, [ 'Hello', 'World!' ] );
     },
-    ('Hello', 'World!')
 );
+$background_job->( 'Hello', 'World!' );
 
 sleep 0.1; # async
 

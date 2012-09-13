@@ -22,14 +22,19 @@ sub setup {
 }
 
 sub ninnin {
-    my ($sub, @args) = @_;
+    my ($sub) = @_;
     die "setup backend first" unless $BROKER;
 
-    my $job = NinNin::Job->new(
-        code => $deparser->coderef2text( $sub ),
-        args => \@args,
-    );
-    $BROKER->( $job );
+    my $code = $deparser->coderef2text( $sub );
+
+    return sub {
+        my (@args) = @_;
+        my $job = NinNin::Job->new(
+            code => $code,
+            args => \@args,
+        );
+        $BROKER->( $job );
+    };
 }
 
 1;
@@ -57,14 +62,15 @@ NinNin - casual background processing
     })
   });
 
-  ninnin(
+  my $background_job = ninnin(
     sub {
       my (@args) = @_;
       # run in gearman worker
       # ...heavy work...
     },
-    (@args) # argument for sub
   );
+  $background_job->( @args ) # run background job with argument
+
 
 =head1 DESCRIPTION
 
